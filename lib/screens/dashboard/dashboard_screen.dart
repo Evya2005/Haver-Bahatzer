@@ -11,6 +11,7 @@ import '../bookings/booking_list_screen.dart';
 import '../calendar/calendar_screen.dart';
 import '../dogs/dog_list_screen.dart';
 import '../financials/financials_screen.dart';
+import '../settings/tag_settings_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -37,6 +38,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: AppBar(
         title: const Text(AppStrings.appName),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.label_outline),
+            tooltip: 'הגדרות תגיות',
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const TagSettingsScreen()),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: AppStrings.logout,

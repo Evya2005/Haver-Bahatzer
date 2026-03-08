@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/dog_model.dart';
+import '../../models/tag_model.dart';
+import '../../providers/tag_provider.dart';
 import '../../screens/dogs/dog_detail_screen.dart';
 import 'dog_tag_chip.dart';
 
@@ -10,6 +13,12 @@ class DogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tagProvider = context.watch<TagProvider>();
+    final resolvedTags = dog.tags
+        .map((id) => tagProvider.findById(id))
+        .whereType<CustomTag>()
+        .toList();
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: InkWell(
@@ -48,11 +57,11 @@ class DogCard extends StatelessWidget {
                       dog.ownerName,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    if (dog.tags.isNotEmpty) ...[
+                    if (resolvedTags.isNotEmpty) ...[
                       const SizedBox(height: 6),
                       Wrap(
                         spacing: 4,
-                        children: dog.tags
+                        children: resolvedTags
                             .map((tag) => DogTagChip(tag: tag, small: true))
                             .toList(),
                       ),

@@ -11,7 +11,7 @@ class DogProvider extends ChangeNotifier {
 
   List<Dog> _dogs = [];
   String _searchQuery = '';
-  Set<DogTag> _activeTagFilters = {};
+  Set<String> _activeTagFilters = {}; // tag IDs
   bool _isLoading = false;
   String? _errorMessage;
   bool _isListening = false;
@@ -20,7 +20,7 @@ class DogProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String get searchQuery => _searchQuery;
-  Set<DogTag> get activeTagFilters => _activeTagFilters;
+  Set<String> get activeTagFilters => _activeTagFilters;
 
   List<Dog> get filteredDogs {
     var result = _dogs;
@@ -35,7 +35,7 @@ class DogProvider extends ChangeNotifier {
 
     if (_activeTagFilters.isNotEmpty) {
       result = result.where((d) {
-        return _activeTagFilters.every((tag) => d.tags.contains(tag));
+        return _activeTagFilters.every((tagId) => d.tags.contains(tagId));
       }).toList();
     }
 
@@ -65,11 +65,11 @@ class DogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleTagFilter(DogTag tag) {
-    if (_activeTagFilters.contains(tag)) {
-      _activeTagFilters = Set.from(_activeTagFilters)..remove(tag);
+  void toggleTagFilter(String tagId) {
+    if (_activeTagFilters.contains(tagId)) {
+      _activeTagFilters = Set.from(_activeTagFilters)..remove(tagId);
     } else {
-      _activeTagFilters = Set.from(_activeTagFilters)..add(tag);
+      _activeTagFilters = Set.from(_activeTagFilters)..add(tagId);
     }
     notifyListeners();
   }
@@ -86,7 +86,6 @@ class DogProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Add to Firestore first to get an ID
       final dogId = await _firestoreService.addDog(dog);
 
       if (photoFile != null) {

@@ -5,8 +5,10 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/constants/kennel_constants.dart';
 import '../../models/dog_model.dart';
+import '../../models/tag_model.dart';
 import '../../providers/booking_provider.dart';
 import '../../providers/dog_provider.dart';
+import '../../providers/tag_provider.dart';
 import '../../widgets/common/error_snackbar.dart';
 import '../../widgets/bookings/booking_card.dart';
 import '../../widgets/dogs/dog_tag_chip.dart';
@@ -526,6 +528,12 @@ class _TagsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tagProvider = context.watch<TagProvider>();
+    final resolvedTags = dog.tags
+        .map((id) => tagProvider.findById(id))
+        .whereType<CustomTag>()
+        .toList();
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -537,7 +545,7 @@ class _TagsCard extends StatelessWidget {
             Wrap(
               spacing: 8,
               runSpacing: 4,
-              children: dog.tags.map((tag) => DogTagChip(tag: tag)).toList(),
+              children: resolvedTags.map((tag) => DogTagChip(tag: tag)).toList(),
             ),
           ],
         ),

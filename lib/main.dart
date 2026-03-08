@@ -11,10 +11,12 @@ import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/booking_provider.dart';
 import 'providers/dog_provider.dart';
+import 'providers/tag_provider.dart';
 import 'services/auth_service.dart';
 import 'services/booking_service.dart';
 import 'services/firestore_service.dart';
 import 'services/storage_service.dart';
+import 'services/tag_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +34,10 @@ void main() async {
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
 
+  // Seed the 3 built-in tags if the collection is empty
+  final tagService = TagService();
+  await tagService.seedInitialTags();
+
   runApp(
     MultiProvider(
       providers: [
@@ -39,8 +45,14 @@ void main() async {
         Provider<FirestoreService>(create: (_) => FirestoreService()),
         Provider<StorageService>(create: (_) => StorageService()),
         Provider<BookingService>(create: (_) => BookingService()),
+        Provider<TagService>(create: (_) => tagService),
         ChangeNotifierProvider<AuthProvider>(
           create: (ctx) => AuthProvider(ctx.read<AuthService>()),
+        ),
+        ChangeNotifierProxyProvider<TagService, TagProvider>(
+          create: (ctx) => TagProvider(ctx.read<TagService>())..startListening(),
+          update: (ctx, tagService, previous) =>
+              previous ?? (TagProvider(tagService)..startListening()),
         ),
         ChangeNotifierProxyProvider2<FirestoreService, StorageService, DogProvider>(
           create: (ctx) => DogProvider(

@@ -11,11 +11,11 @@ const _uploadPreset = 'dohdehlw';
 
 class StorageService {
   Future<String> uploadDogPhoto(String dogId, Uint8List bytes) async {
-    return _upload(bytes);
+    return _upload(bytes, folder: 'dogs');
   }
 
   Future<String> uploadContractPhoto(String bookingId, Uint8List bytes) async {
-    return _upload(bytes);
+    return _upload(bytes, folder: 'contracts');
   }
 
   Future<void> deleteDogPhoto(String dogId) async {
@@ -24,11 +24,12 @@ class StorageService {
     // meaningful cost on the free tier for a small facility.
   }
 
-  Future<String> _upload(Uint8List bytes) async {
+  Future<String> _upload(Uint8List bytes, {required String folder}) async {
     final uri = Uri.parse('https://api.cloudinary.com/v1_1/$_cloudName/image/upload');
 
     final request = http.MultipartRequest('POST', uri)
       ..fields['upload_preset'] = _uploadPreset
+      ..fields['folder'] = folder
       ..files.add(http.MultipartFile.fromBytes(
         'file',
         bytes,

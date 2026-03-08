@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_strings.dart';
-import '../../models/dog_model.dart';
 import '../../providers/dog_provider.dart';
+import '../../providers/tag_provider.dart';
 import '../../widgets/dogs/dog_card.dart';
 import 'dog_form_screen.dart';
 
@@ -60,21 +60,22 @@ class _TagFilters extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final activeFilters = context.watch<DogProvider>().activeTagFilters;
-    final provider = context.read<DogProvider>();
+    final dogProvider = context.read<DogProvider>();
+    final allTags = context.watch<TagProvider>().tags;
 
     return SizedBox(
       height: 48,
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        children: DogTag.values.map((tag) {
-          final isActive = activeFilters.contains(tag);
+        children: allTags.map((tag) {
+          final isActive = activeFilters.contains(tag.id);
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: FilterChip(
-              label: Text(tag.hebrewLabel),
+              label: Text(tag.label),
               selected: isActive,
-              onSelected: (_) => provider.toggleTagFilter(tag),
+              onSelected: (_) => dogProvider.toggleTagFilter(tag.id),
             ),
           );
         }).toList(),

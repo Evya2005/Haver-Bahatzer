@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_strings.dart';
-import '../../models/dog_model.dart';
+import '../../providers/tag_provider.dart';
 
 class DogTagsSelector extends StatelessWidget {
-  final List<DogTag> selectedTags;
-  final ValueChanged<List<DogTag>> onChanged;
+  final List<String> selectedTags; // tag IDs
+  final ValueChanged<List<String>> onChanged;
 
   const DogTagsSelector({
     super.key,
@@ -14,6 +15,8 @@ class DogTagsSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final allTags = context.watch<TagProvider>().tags;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -21,21 +24,20 @@ class DogTagsSelector extends StatelessWidget {
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
-          children: DogTag.values.map((tag) {
-            final selected = selectedTags.contains(tag);
+          children: allTags.map((tag) {
+            final selected = selectedTags.contains(tag.id);
             return FilterChip(
-              label: Text(tag.hebrewLabel),
+              label: Text(tag.label),
               selected: selected,
               onSelected: (value) {
-                final updated = List<DogTag>.from(selectedTags);
+                final updated = List<String>.from(selectedTags);
                 if (value) {
-                  updated.add(tag);
+                  updated.add(tag.id);
                 } else {
-                  updated.remove(tag);
+                  updated.remove(tag.id);
                 }
                 onChanged(updated);
               },
-              avatar: selected ? null : null,
             );
           }).toList(),
         ),

@@ -38,7 +38,7 @@ class _DogFormScreenState extends State<DogFormScreen> {
   late final TextEditingController _dailyRateController;
   late final TextEditingController _mealsPerDayController;
   late final TextEditingController _additionalNotesController;
-  late List<DogTag> _selectedTags;
+  late List<String> _selectedTags;
   bool? _isNeutered;
   bool? _isMale;
   File? _imageFile;
@@ -60,7 +60,7 @@ class _DogFormScreenState extends State<DogFormScreen> {
     _mealsPerDayController = TextEditingController(
         text: d?.mealsPerDay != null ? d!.mealsPerDay.toString() : '');
     _additionalNotesController = TextEditingController(text: d?.additionalNotes ?? '');
-    _selectedTags = List.from(d?.tags ?? []);
+    _selectedTags = List<String>.from(d?.tags ?? []);
     _isNeutered = d?.isNeutered;
     _isMale = d?.isMale;
     _selectedOwnerPhone = d?.ownerPhone;

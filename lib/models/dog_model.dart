@@ -1,38 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum DogTag { aggressive, medication, escapist }
-
-extension DogTagExtension on DogTag {
-  String get firestoreValue {
-    switch (this) {
-      case DogTag.aggressive:
-        return 'aggressive';
-      case DogTag.medication:
-        return 'medication';
-      case DogTag.escapist:
-        return 'escapist';
-    }
-  }
-
-  String get hebrewLabel {
-    switch (this) {
-      case DogTag.aggressive:
-        return 'תוקפני';
-      case DogTag.medication:
-        return 'תרופות';
-      case DogTag.escapist:
-        return 'בורח';
-    }
-  }
-
-  static DogTag? fromFirestoreValue(String value) {
-    for (final tag in DogTag.values) {
-      if (tag.firestoreValue == value) return tag;
-    }
-    return null;
-  }
-}
-
 class Dog {
   final String id;
   final String name;
@@ -41,7 +8,7 @@ class Dog {
   final String ownerPhone;
   final String? notes;
   final String? photoUrl;
-  final List<DogTag> tags;
+  final List<String> tags; // tag IDs stored in Firestore `tags` collection
   final int? ageYears;
   final double? dailyRate;
   final bool? isNeutered;
@@ -73,8 +40,7 @@ class Dog {
   factory Dog.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     final tagList = (data['tags'] as List<dynamic>? ?? [])
-        .map((t) => DogTagExtension.fromFirestoreValue(t as String))
-        .whereType<DogTag>()
+        .whereType<String>()
         .toList();
 
     return Dog(
@@ -105,7 +71,7 @@ class Dog {
       'ownerPhone': ownerPhone,
       'notes': notes,
       'photoUrl': photoUrl,
-      'tags': tags.map((t) => t.firestoreValue).toList(),
+      'tags': tags,
       'ageYears': ageYears,
       'dailyRate': dailyRate,
       'isNeutered': isNeutered,
@@ -125,7 +91,7 @@ class Dog {
     String? ownerPhone,
     String? notes,
     String? photoUrl,
-    List<DogTag>? tags,
+    List<String>? tags,
     int? ageYears,
     double? dailyRate,
     Object? isNeutered = _sentinel,
