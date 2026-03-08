@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "345774178337",
+    "project_id": "haver-bahatzer",
+    "storage_bucket": "haver-bahatzer.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345774178337:android:d51eace796e57b2c00a360",
+        "android_client_info": {
+          "package_name": "com.haverba.haver_bahatzer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgsDq1vUZ4gfIgGurSQti35F8NpVNjCew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
